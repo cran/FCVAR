@@ -95,11 +95,9 @@ test_that("unrestricted estimation results and output are correct", {
 })
 
 
-test_that("restricted estimation results and output are correct", {
+test_that("restricted estimation with d = b = 1 is correct", {
   load(file = 'soln_estn/results_m1r124.RData')
   m1r1_text_soln <- readLines('soln_estn/results_m1r1.txt')
-  m1r2_text_soln <- readLines('soln_estn/results_m1r2.txt')
-  m1r4_text_soln <- readLines('soln_estn/results_m1r4.txt')
 
   opt <- FCVARoptions(
     unc_optim_control = list(maxit = 1000,    # Reduce tolerance.
@@ -149,7 +147,32 @@ test_that("restricted estimation results and output are correct", {
   expect_equal(m1r1_test, m1r1)
   expect_equal(m1r1_test_NegInvHessian, m1r1_NegInvHessian, tolerance = 10^(-5))
   expect_equal(m1r1_test_SE, m1r1_SE, tolerance = 10^(-6))
+
+  # Exact equality (without tolerance) is not expected on all platforms.
+  skip_on_cran()
   expect_equal(m1r1_text, m1r1_text_soln)
+
+})
+
+
+
+test_that("restricted estimation with R_Beta <- c(1, 0, 0) is correct", {
+  load(file = 'soln_estn/results_m1r124.RData')
+  m1r2_text_soln <- readLines('soln_estn/results_m1r2.txt')
+
+  opt <- FCVARoptions(
+    unc_optim_control = list(maxit = 1000,    # Reduce tolerance.
+                             reltol = 1e-10),
+    con_optim_control = list(maxit = 1000,    # Reduce tolerance.
+                             pgtol = 1e-10),
+    hess_delta = 10^(-3),  # Stable for testing on 32-bit, 386 architecture.
+    gridSearch   = 0, # Disable grid search in optimization.
+    dbMin        = c(0.01, 0.01), # Set lower bound for d,b.
+    dbMax        = c(2.00, 2.00), # Set upper bound for d,b.
+    constrained  = 0, # Impose restriction dbMax >= d >= b >= dbMin ? 1 <- yes, 0 <- no.
+    plotRoots    = 0 # Don't create plots for tests.
+  )
+  x <- votingJNP2014[, c("lib", "ir_can", "un_can")]
 
   opt1 <- opt
   opt1$R_Beta <- matrix(c(1, 0, 0), nrow = 1, ncol = 3)
@@ -185,6 +208,9 @@ test_that("restricted estimation results and output are correct", {
   expect_equal(m1r2_test, m1r2)
   expect_equal(m1r2_test_NegInvHessian, m1r2_NegInvHessian, tolerance = 10^(-5))
   expect_equal(m1r2_test_SE, m1r2_SE, tolerance = 10^(-6))
+
+  # Exact equality (without tolerance) is not expected on all platforms.
+  skip_on_cran()
   expect_equal(m1r2_text, m1r2_text_soln)
 
   # expect_equal(m1r2_test, m1r2)
@@ -194,6 +220,28 @@ test_that("restricted estimation results and output are correct", {
   # # expect_equal(m1r2_text[1:85], m1r2_text_soln[1:85])
   # # expect_equal(m1r2_text[87:103], m1r2_text_soln[87:103])
   # # expect_equal(m1r2_text[105:113], m1r2_text_soln[105:113])
+
+
+})
+
+
+test_that("restricted estimation with R_Alpha <- c(0, 1, 0) is correct", {
+  load(file = 'soln_estn/results_m1r124.RData')
+  m1r4_text_soln <- readLines('soln_estn/results_m1r4.txt')
+
+  opt <- FCVARoptions(
+    unc_optim_control = list(maxit = 1000,    # Reduce tolerance.
+                             reltol = 1e-10),
+    con_optim_control = list(maxit = 1000,    # Reduce tolerance.
+                             pgtol = 1e-10),
+    hess_delta = 10^(-3),  # Stable for testing on 32-bit, 386 architecture.
+    gridSearch   = 0, # Disable grid search in optimization.
+    dbMin        = c(0.01, 0.01), # Set lower bound for d,b.
+    dbMax        = c(2.00, 2.00), # Set upper bound for d,b.
+    constrained  = 0, # Impose restriction dbMax >= d >= b >= dbMin ? 1 <- yes, 0 <- no.
+    plotRoots    = 0 # Don't create plots for tests.
+  )
+  x <- votingJNP2014[, c("lib", "ir_can", "un_can")]
 
   opt1 <- opt
   opt1$R_Alpha <- matrix(c(0, 1, 0), nrow = 1, ncol = 3)
@@ -229,6 +277,9 @@ test_that("restricted estimation results and output are correct", {
   expect_equal(m1r4_test, m1r4)
   expect_equal(m1r4_test_NegInvHessian, m1r4_NegInvHessian, tolerance = 10^(-5))
   expect_equal(m1r4_test_SE, m1r4_SE, tolerance = 10^(-6))
+
+  # Exact equality (without tolerance) is not expected on all platforms.
+  skip_on_cran()
   expect_equal(m1r4_text, m1r4_text_soln)
 
   # expect_equal(m1r4_test, m1r4)

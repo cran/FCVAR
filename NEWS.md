@@ -1,12 +1,7 @@
-# FCVAR 0.1.0
+# FCVAR 0.1.1
 
-# August 4, 2021: Fourth submission.
+### August 6, 2021: Sixth submission (FCVAR v0.1.1).
 
-* Added link to reference paper in the DESCRIPTION file. 
-* Changed examples with ```\dontrun``` to ```\donttest``` for examples
-with run time than took longer than 5s.
-* Removed example from demo that changed ```par()``` settings.
-* For function ```plot.FCVAR_grid()``` that changes ```par()``` settings, 
-because it creates a figure with thinner margins, 
-inserted command ```on.exit(par(oldpar))``` to restore user's settings, 
-immediately after the change to ```par()```. 
+* For models with restricted estimation, skipped tests on CRAN 
+that compare printed output and require exact equality (i.e. without tolerance), 
+but retained tests on same with default tolerance for numerical equality. 
