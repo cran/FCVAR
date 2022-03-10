@@ -34,8 +34,18 @@ devtools::install_github("LeeMorinUCF/FCVAR")
 However, the version on CRAN is recommended because that version
 is tested and vetted for submission to CRAN. 
 
+Currently, the development version has no new features that are 
+not already available in the released version available on CRAN. 
+
 
 ## Release Notes
+
+### March 10, 2022: Seventh submission (FCVAR v0.1.2).
+
+* Adjustment for issue with counting the number of free parameters in constrained model. 
+* Added warning message for rank test with rank above 12. In this case, 
+p-values are only available by simulation with the FCVARbootRank() function. 
+
 
 ### August 6, 2021: Sixth submission (FCVAR v0.1.1).
 
